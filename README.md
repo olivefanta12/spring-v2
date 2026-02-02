@@ -23,7 +23,7 @@
 ### 1. 회원가입
 
 - 그림 다운로드 (v)
-- user폴더 usercontroller 만들어서 그림 연결
-- User 테이블생성 - 더미데이터
-- UserRepository만들어서 DB 테스트 코드
-- 컨트롤러, 서비스, 레포 연결해서 기능 완료하기
+- user폴더 usercontroller 만들어서 그림 연결 (v)
+- User 테이블생성 - 더미데이터 (v)
+- UserRepository만들어서 DB 테스트 코드 (v)
+- 컨트롤러, 서비스, 레포 연결해서 기능 완료하기 (v)
