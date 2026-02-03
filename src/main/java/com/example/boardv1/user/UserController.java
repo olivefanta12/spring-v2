@@ -16,6 +16,16 @@ public class UserController {
 
     private final HttpSession session;
 
+    // 브라우저의 쿠키에 sessionkey값 삭제
+    // 30분동안 요청하지않기 (request)
+    // 모든 브라우저 종료
+    // 서버 로그아웃
+    @GetMapping("/logout")
+    public String logOut() {
+        session.invalidate();
+        return "redirect:/";
+    }
+
     @GetMapping("/login-form")
     public String loginForm() {
         return "user/login-form";
