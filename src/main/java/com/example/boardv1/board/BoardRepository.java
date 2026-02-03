@@ -34,6 +34,17 @@ public class BoardRepository {
     // return board;
     // }
 
+    public Optional<Board> findByIdJoinUser(int id) {
+        Query query = em.createQuery("select b from board b join fetch b.user u where b.id = :id", Board.class);
+        query.setParameter("id", id);
+        try {
+            Board board = (Board) query.getSingleResult();
+            return Optional.of(board);
+        } catch (Exception e) {
+            return Optional.ofNullable(null);
+        }
+    }
+
     public Optional<Board> findById(int id) {
         Board findBoard = em.find(Board.class, id);
         return Optional.ofNullable(findBoard);
