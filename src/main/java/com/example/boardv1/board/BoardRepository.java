@@ -1,6 +1,7 @@
 package com.example.boardv1.board;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -24,23 +25,25 @@ public class BoardRepository {
     // this.em = em;
     // }
 
-    public Board findById(int id) {
-        Board board = em.find(Board.class, id);
-        // select * from board_tb where id = 1;
-        // ResultSet rs -> Board 객체 옮기기 (Object Mapping)
-        // Board board = new Board();
-        // board.id = rs.getInt("id");
-        return board;
+    // public Board findById(int id) {
+    // Board board = em.find(Board.class, id);
+    // // select * from board_tb where id = 1;
+    // // ResultSet rs -> Board 객체 옮기기 (Object Mapping)
+    // // Board board = new Board();
+    // // board.id = rs.getInt("id");
+    // return board;
+    // }
+
+    public Optional<Board> findById(int id) {
+        Board findBoard = em.find(Board.class, id);
+        return Optional.ofNullable(findBoard);
+
     }
 
     public List<Board> findAll() {
         Query query = em.createQuery("select b from Board b order by b.id desc", Board.class); // 객체 지향 쿼리
-        List<Board> list = query.getResultList();
+        List<Board> list = query.getResultStream().toList();
         return list;
-    }
-
-    public void findAllV2() {
-        em.createQuery("select b.id, b.title from Board b").getResultList();
     }
 
     public Board save(Board board) {
