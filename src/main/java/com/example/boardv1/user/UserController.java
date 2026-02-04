@@ -51,6 +51,7 @@ public class UserController {
 
         User sessionUser = userService.로그인(reqDTO.getUsername(), reqDTO.getPassword());
         session.setAttribute("sessionUser", sessionUser);
+        System.out.println(sessionUser);
         // http Response header에 Set-cookie : sessionkey값에 자동저장되서 응답됨.
 
         Cookie cookie = new Cookie("username", sessionUser.getUsername());
