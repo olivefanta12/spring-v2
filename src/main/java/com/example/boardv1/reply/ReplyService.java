@@ -3,6 +3,8 @@ package com.example.boardv1.reply;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.boardv1._core.errors.ex.Exception403;
+import com.example.boardv1._core.errors.ex.Exception404;
 import com.example.boardv1.board.Board;
 import com.example.boardv1.user.User;
 
@@ -34,11 +36,11 @@ public class ReplyService {
     public void 댓글삭제(int id, Integer sessionUserid) {
         // 1. 댓글찾기
         Reply reply = replyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("에에에ㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔ러"));
+                .orElseThrow(() -> new Exception404("에에에ㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔ러"));
 
         // 2. 권한체크
         if (reply.getUser().getId() != sessionUserid)
-            throw new RuntimeException("에ㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔ러");
+            throw new Exception403("에ㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔㅔ러");
 
         // 3. 댓글 삭제
         replyRepository.delete(reply);

@@ -3,15 +3,18 @@ package com.example.boardv1.board;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.boardv1._core.errors.ex.Exception401;
 import com.example.boardv1.user.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -24,11 +27,11 @@ public class BoardController {
 
     // body : title=title7&content=content7 (x-www-form)
     @PostMapping("/boards/save")
-    public String save(BoardRequest.SaveOrUpdateDTO reqDTO) {
+    public String save(@Valid BoardRequest.SaveOrUpdateDTO reqDTO, Errors errors) {
         // 인증 v , 권한 x
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) {
-            throw new RuntimeException("인증되지 않았습니다");
+            throw new Exception401("인증되지 않았습니다");
         }
         boardService.게시글쓰기(reqDTO.getTitle(), reqDTO.getContent(), sessionUser);
         return "redirect:/";
@@ -39,7 +42,7 @@ public class BoardController {
         // 인증 v , 권한 v
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) {
-            throw new RuntimeException("인증되지 않았습니다");
+            throw new Exception401("인증되지 않았습니다");
         }
 
         boardService.게시글수정(id, reqDTO.getTitle(), reqDTO.getContent(), sessionUser.getId());
@@ -59,7 +62,7 @@ public class BoardController {
     public String saveForm() {
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) {
-            throw new RuntimeException("인증되지 않았습니다");
+            throw new Exception401("인증되지 않았습니다");
         }
 
         return "board/save-form";
@@ -71,7 +74,7 @@ public class BoardController {
 
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) {
-            throw new RuntimeException("인증되지 않았습니다");
+            throw new Exception401("인증되지 않았습니다");
         }
 
         Board board = boardService.수정폼게시글정보(id, sessionUser.getId());
@@ -96,7 +99,7 @@ public class BoardController {
     public String delete(@PathVariable("id") int id) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) {
-            throw new RuntimeException("인증되지 않았습니다");
+            throw new Exception401("인증되지 않았습니다");
         }
         boardService.게시글삭제(id, sessionUser.getId());
         return "redirect:/";

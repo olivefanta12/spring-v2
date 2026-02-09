@@ -1,12 +1,16 @@
 package com.example.boardv1.user;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import com.example.boardv1._core.errors.ex.Exception401;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -38,17 +42,20 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public String join(UserRequest.JoinDTO reqDTO) {
+    public String join(@Valid UserRequest.JoinDTO reqDTO, Errors errors) {
         userService.회원가입(reqDTO.getUsername(), reqDTO.getPassword(), reqDTO.getEmail());
         return "redirect:/login-form";
     }
 
     // 조회인데, 예외로 post요청
     @PostMapping("/login")
-    public String login(UserRequest.LoginDTO reqDTO, HttpServletResponse resp) {
+    public String login(@Valid UserRequest.LoginDTO reqDTO, Errors errors, HttpServletResponse resp) {
         // HttpSession session = req.getSession(); // 유일하니까(singleton) ioc에 띄움
 
         User sessionUser = userService.로그인(reqDTO.getUsername(), reqDTO.getPassword());
+        if (sessionUser == null) {
+            throw new Exception401("인증되지 않았습니다");
+        }
         session.setAttribute("sessionUser", sessionUser);
         System.out.println(sessionUser);
         // http Response header에 Set-cookie : sessionkey값에 자동저장되서 응답됨.
