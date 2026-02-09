@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.boardv1._core.errors.ex.Exception401;
 import com.example.boardv1.user.User;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,9 +29,6 @@ public class BoardController {
     public String save(@Valid BoardRequest.SaveOrUpdateDTO reqDTO, Errors errors) {
         // 인증 v , 권한 x
         User sessionUser = (User) session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            throw new Exception401("인증되지 않았습니다");
-        }
         boardService.게시글쓰기(reqDTO.getTitle(), reqDTO.getContent(), sessionUser);
         return "redirect:/";
     }
@@ -41,10 +37,6 @@ public class BoardController {
     public String update(@PathVariable("id") int id, BoardRequest.SaveOrUpdateDTO reqDTO) {
         // 인증 v , 권한 v
         User sessionUser = (User) session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            throw new Exception401("인증되지 않았습니다");
-        }
-
         boardService.게시글수정(id, reqDTO.getTitle(), reqDTO.getContent(), sessionUser.getId());
         return "redirect:/boards/" + id;
     }
@@ -60,11 +52,6 @@ public class BoardController {
     @GetMapping("/boards/save-form")
     // 인증 v , 권한 x
     public String saveForm() {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            throw new Exception401("인증되지 않았습니다");
-        }
-
         return "board/save-form";
     }
 
@@ -73,10 +60,6 @@ public class BoardController {
         // 인증 v , 권한 v
 
         User sessionUser = (User) session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            throw new Exception401("인증되지 않았습니다");
-        }
-
         Board board = boardService.수정폼게시글정보(id, sessionUser.getId());
         req.setAttribute("model", board);
         return "board/update-form";
@@ -98,9 +81,6 @@ public class BoardController {
     // 인증 v , 권한 v
     public String delete(@PathVariable("id") int id) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            throw new Exception401("인증되지 않았습니다");
-        }
         boardService.게시글삭제(id, sessionUser.getId());
         return "redirect:/";
     }
